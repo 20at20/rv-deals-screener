@@ -11,8 +11,22 @@ This project is created to make a screening of the projects for early-stage VC f
 
 ## How to run & verify
 - Install: `pip install -r requirements.txt`
-- Run: `python main.py`
+- Run pipeline directly: `python main.py`
+- Run webhook server locally: `python server.py`
 - Credentials: copy `.env.template` → `.env` and fill in all values
+
+## Webhook server (server.py)
+Flask server that exposes `POST /run` — used by the Google Sheets button to trigger the pipeline remotely.
+- Deployed on Railway at `web-production-5dcdc.up.railway.app`
+- GitHub repo: `github.com/20at20/rv-deals-screener` — Railway auto-deploys on push to main
+- Auth: `X-Webhook-Secret` header must match `WEBHOOK_SECRET` env var
+- Pipeline runs in a background thread; server responds 202 immediately
+- Google Sheets button → Apps Script (`runScreener`) → calls `/run` → results appear in sheet
+
+## Deployment env vars (Railway)
+Same as `.env` plus:
+- `WEBHOOK_SECRET` — shared with Apps Script Script Properties
+- `GOOGLE_CREDENTIALS_JSON` — full contents of the service account JSON file (NOT `GOOGLE_CREDENTIALS_PATH`)
 
 ## WAT Framework
 All work follows three layers. Identify the layer before writing any code.

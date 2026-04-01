@@ -30,5 +30,9 @@ Each entry: what went wrong → rule that prevents it from happening again.
 **What went wrong:** Running two deals back-to-back with LinkedIn enrichment + market research exhausted the rate bucket within a minute, causing all calls to fail.
 **Rule:** Add retry with 60s backoff on `RateLimitError`. Keep team and market data concise. For production use, add billing to reach Tier 1 (400K tokens/min).
 
+### 6. On Railway, use GOOGLE_CREDENTIALS_JSON not GOOGLE_CREDENTIALS_PATH
+**What went wrong:** Railway env var was named `GOOGLE_CREDENTIALS_PATH` but set to the JSON content (not a file path). The code tried to open the JSON string as a filename and crashed with `FileNotFoundError`.
+**Rule:** When deploying to Railway (or any cloud), always use `GOOGLE_CREDENTIALS_JSON` (the JSON content as a string). `GOOGLE_CREDENTIALS_PATH` is only for local runs where the file actually exists on disk. `tools/sheets.py` already handles both — just use the right variable name.
+
 ---
-*Last updated: 2026-03-31*
+*Last updated: 2026-04-02*

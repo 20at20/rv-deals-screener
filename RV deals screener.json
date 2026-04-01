@@ -1,0 +1,1544 @@
+{
+  "name": "RV deals screener",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/code_crafter~leads-finder/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer apify_api_ZOacg7dhxRGzlf84hTnXkhoqxrPtGt2t3t6x"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"company_domain\": [\n        \"{{ $items('If')[$itemIndex].json['Company website'] }}\"\n    ],\n    \"contact_job_title\": [\n        \"founder\"\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        528,
+        -336
+      ],
+      "id": "103c8dee-8c34-403f-8854-8075dd6ddca6",
+      "name": "HTTP Request",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs",
+          "mode": "list",
+          "cachedResultName": "RV Screener",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Priority": "={{ $json.message.content.decision }}",
+            "Comments": "={{ $json.message.content.comment }}",
+            "Make analysis": "Done",
+            "Company website": "={{ $('Get row(s) in sheet1').item.json['Company website'] }}",
+            "Team data": "={{$if(\n  $(\"Edit Fields3\").isExecuted,\n  $(\"Edit Fields3\").item.json.data,\n  $(\"Edit Fields1\").item.json.data\n)}}",
+            "Market data": "={{ $('HTTP Request3').item.json.output[1].content[0].text }}"
+          },
+          "matchingColumns": [
+            "Company website"
+          ],
+          "schema": [
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Founder Linkedins",
+              "displayName": "Founder Linkedins",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Make analysis",
+              "displayName": "Make analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Team data",
+              "displayName": "Team data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Market data",
+              "displayName": "Market data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3232,
+        -96
+      ],
+      "id": "dc3a1ad7-2217-406b-827c-8697b077d9ea",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IWDw76cHQTbMpcT9",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Workflow\n1. Apify finds foudners\n2. Apify scrape all the data\n3. We systemize all the data\n4. We call for screener\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -800,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "a4833c3e-4479-4212-b7ae-2db9a2a4a652",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "ROLE\nYou are an early-stage venture capital analyst evaluating pre-seed and seed startups.\n\n====\n\nGOAL\nYour job is to EVALUATE, not summarize. Produce judgments, not descriptions.\n\n====\n\nTONE:\n- Be analytical and skeptical. Avoid generic praise and vague language.\n- If information is missing, say what is missing and how that reduces conviction.\n\n====\n\nOUTPUT REQUIREMENTS:\n1. \"decision\": Final decision should be priority: 1, 2 or 3.\n2. \"comment\": why this decision\n\n====\n\nFACTORS EVALUATION (estimate only these factors):\n\n1. TEAM\ni. Doer / Entrepreneurship: Evaluate whether the founders are builders who have shipped real products or led execution during their career.\nii. Market Expertise: Assess whether the team has sufficient domain experience, worked in similar domain.\n\n2. MARKET OPPORTUNITY\ni. Market Size: Evaluate whether the market is realistically large enough to support a $1B+ outcome and whether TAM claims are credible rather than inflated.\nii. Timing: Assess whether there is a real “why now” driven by technological, regulatory, behavioral, or cost structure shifts.\niii. Competition: Evaluate how crowded the space is and whether the startup has a believable path to differentiation or structural advantage.\n\nWhen evaluating TEAM:\n- ONLY consider experience PRIOR to the current role.\n- DO NOT treat founding the current company as evidence of execution.\n- If a founder’s only startup experience is the CURRENT company being evaluated, this MUST NOT be counted as Doer evidence.\n\nIMPORTANT CLARIFICATIONS ON EXPERIENCE QUALITY:\nStrong Doer signals include:\n- Prior founder with shipped product\n- C-level role in VC-backed tech startup\n- Led engineering/product teams that built and launched products\n- Built revenue-generating product from 0→1\n\nWeak Doer signals include:\n- Pure consulting / advisory roles (Experience in large consulting firms (e.g., McKinsey, BCG, Bain, EY Advisory, Capgemini, etc.) should NOT be considered strong Doer evidence.)\n- Corporate strategy roles without product ownership\n- Non-technical corporates \n====\n\nSCORING LOGIC:\nTeam factor, especially doer/entrepreneurship plays key role in a decision and should account for 80% of estimation. Market opportunity is the next building block and it should account for 20% of the decision.\n\nDecision = 1 (High Priority)\nIf:\n→ GOOD Doer / Entrepreneurship factor in team\n\nDecision = 2 (Medium Priority)\nIf:\n→ ONLY IF Doer factor is MID AND Market expertise is STRONG AND MARKET OPPORTUNITY factor is STRONG.\n\nDecision = 3 (Low Priority / Pass)\n→ Not priority 1 or 2\n→  company 4+ years since founding (too old)\n\nIMPORTANT: Missing/unclear market size data must NOT prevent Decision = 1 if the team factor is high. In that case, keep Decision = 1 and explicitly state: \"Market sizing is not fully validated; conviction reduced slightly.\"",
+              "role": "system"
+            },
+            {
+              "content": "=TEAM DATA:\n{{ JSON.stringify($json.data, null, 2) }}\n\nMarket and company info:\n{{ $('HTTP Request3').item.json.output[1].content[0].text }}\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2736,
+        -384
+      ],
+      "id": "e1c062f3-a705-4648-9d42-c72a7e24aa0f",
+      "name": "Give recommendation",
+      "credentials": {
+        "openAiApi": {
+          "id": "8pOWwn1fLJNoM7R8",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs",
+          "mode": "list",
+          "cachedResultName": "RV Screener",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Make analysis",
+              "lookupValue": "Yes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -608,
+        -48
+      ],
+      "id": "52c47274-f3c2-4038-9846-904027dfa594",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IWDw76cHQTbMpcT9",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "69cc19bd-efb9-410d-98c3-769ae651134c",
+              "leftValue": "={{ $json['Company website'] }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -176
+      ],
+      "id": "38536272-6be4-4560-92db-eae7eb9c5839",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow\ndo for linkedin only\n\nfind founders: https://console.apify.com/actors/IoSHqwTR9YGhzccez/input\n\nfind data\nhttps://console.apify.com/actors/AgfKk0sQQxkpQJ1Dt/input?addFromActorId=AgfKk0sQQxkpQJ1Dt\n\n0.1 per lead\n",
+        "height": 224,
+        "width": 528
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "058569f2-e8bc-46d2-bf04-47a1b2cf3333",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "35492dab-b0e7-45bf-b35b-a1eadf1a42be",
+              "name": "name",
+              "value": "={{ $json.first_name }} {{ $json.last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "2974918d-e895-4ccf-b065-62ea3aa0fe50",
+              "name": "Linkedin",
+              "value": "={{ $json.linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "23b7c1c2-e9ab-40fe-b290-412a479e3c4b",
+              "name": "Company_name",
+              "value": "={{ $json.company_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1088,
+        -496
+      ],
+      "id": "39439f07-f911-4a6f-8ca7-527e6d38ebba",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/anchor~linkedin-profile-enrichment/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer apify_api_ZOacg7dhxRGzlf84hTnXkhoqxrPtGt2t3t6x"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\nstartUrls: ($json.Linkedin || []).map((u, i) => ({ url: u, id: String(i + 1) }))\n}\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1456,
+        -496
+      ],
+      "id": "de7deca6-7b35-49bf-8c78-579f0d3b2367",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "Linkedin"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -496
+      ],
+      "id": "0306c896-a7a0-40bf-9384-b1b595d2d860",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"tools\": [{\"type\": \"web_search_preview\"}],\n  \"instructions\": \"You are a research assistant specialized in analyzing market opportunity for a VC-backed company. Always look for recent market size estimations, trends on the market (why now?), which level of revenue tech companies achieved in the sector\",\n  \"input\": \"Research market opportunity for this company: {{ $json['Company website'] }}\",\n  \"max_output_tokens\": 1000,\n  \"truncation\": \"auto\",\n  \"tool_choice\": \"auto\",\n  \"max_tool_calls\": 3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        272,
+        -336
+      ],
+      "id": "2b6f15d1-d9d9-4ef8-b20b-b5237d280eb6",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ed670df-b8f9-4ff7-b8fe-b98278e45a91",
+              "name": "full_name",
+              "value": "={{ $json.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c78258a4-044d-4a86-9001-bece459887d5",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "dd176a6e-af8f-4ceb-b5cb-58b92aa9bd10",
+              "name": "follower_count",
+              "value": "={{ $json.follower_count }}",
+              "type": "number"
+            },
+            {
+              "id": "2036c0d7-fcac-40ca-a34a-1ecbbdb87ce6",
+              "name": "experiences",
+              "value": "={{ $json.experiences.slice(0, 10) }}",
+              "type": "array"
+            },
+            {
+              "id": "7fce47fb-966b-4f70-b379-c4b25ed29559",
+              "name": "education",
+              "value": "={{ $json.education }}",
+              "type": "array"
+            },
+            {
+              "id": "7d2ee25f-5ede-4159-ae2f-60c23c4e9f7a",
+              "name": "languages",
+              "value": "={{ $json.languages }}",
+              "type": "array"
+            },
+            {
+              "id": "a662b412-0774-41f8-b4dd-3196a409802d",
+              "name": "company_name",
+              "value": "={{ $json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "75083db5-5119-4571-a306-2b591b3df812",
+              "name": "company_website",
+              "value": "={{ $json.company_website }}",
+              "type": "string"
+            },
+            {
+              "id": "bc71a04d-d927-42bb-a52d-dceaf273b2c7",
+              "name": "company_linkedin",
+              "value": "={{ $json.company_linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "61b254d5-6c61-41ec-b934-f35af749a05d",
+              "name": "company_founded_in",
+              "value": "={{ $json.company_founded_in }}",
+              "type": "number"
+            },
+            {
+              "id": "320f1ae4-200a-4f29-a1f5-98a47f1a2414",
+              "name": "company_size",
+              "value": "={{ $json.company_size }}",
+              "type": "string"
+            },
+            {
+              "id": "9df53e24-77b4-4c88-bb40-483e137f1c3d",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "8cfb6d1f-ae37-41c5-bcb8-4ea35d3d9405",
+              "name": "country",
+              "value": "={{ $json.country }}",
+              "type": "string"
+            },
+            {
+              "id": "8a691b56-25a0-4c78-9b1f-b10f848ab595",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1632,
+        -496
+      ],
+      "id": "c60a2796-4a0c-4fe2-995b-84db43d07f7b",
+      "name": "Set fields"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        -496
+      ],
+      "id": "bd3f4902-f25e-426a-b61f-09463e280eee",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"gpt-4o-mini\",\n  \"tools\": [{\"type\": \"web_search_preview\"}],\n  \"instructions\": \"You are a research assistant specialized in researching data about founding team for a VC-backed company. Find data on histroical experience of all the founding team members. You should look for a data of experience PRIOR to current startup. Do not ask specifing questions.\",\n  \"input\": \"Research team for this company: {{ $items('If')[$itemIndex].json['Company website'] }}\",\n  \"max_output_tokens\": 1000,\n  \"truncation\": \"auto\",\n  \"tool_choice\": \"auto\",\n  \"max_tool_calls\": 3\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        -288
+      ],
+      "id": "21bfbccd-433d-43e1-8560-17679e028d2b",
+      "name": "HTTP Request4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "80c47690-1d66-493b-8256-ced8fbf0a56f",
+              "leftValue": "={{ Object.keys($json).length > 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -336
+      ],
+      "id": "012e838f-3ad7-409d-8a1a-598f270b7ef8",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7ca7ecfa-6ab4-4752-ab88-b54f13863379",
+              "name": "data",
+              "value": "={{\n  $if(\n    $(\"Aggregate1\").isExecuted,\n    $(\"Aggregate1\").item.json.data,\n    $(\"Edit Fields2\").item.json.output[1].content[0].text\n  )\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2560,
+        -384
+      ],
+      "id": "0b1f469c-6a56-44c0-b77b-a42dfa260887",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cb6f928-d60f-4100-a64a-5339eb91d3c2",
+              "name": "output[1].content[0].text",
+              "value": "={{ $json.output?.find(o => o.type === 'message')?.content?.[0]?.text ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        -288
+      ],
+      "id": "c3017e0c-a148-4249-b4ff-a920f46262d4",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6a72615-2a0d-421a-a811-43ae5ef7d77f",
+              "name": "=data",
+              "value": "={{ \n$('Aggregate1').item.json.data\n  .map(f => {\n\n    const shortSummary = (f.summary || '')\n      .replace(/\\n/g, ' ')\n      .slice(0, 300);\n\n    const exp = (f.experiences || [])\n      .slice(0,5)\n      .map(e => {\n        const period = `${e.starts_at || ''}${e.ends_at ? '–' + e.ends_at : ''}`;\n        const description = e.description && e.description !== 'empty'\n          ? `\\n   ▪ ${e.description}`\n          : '';\n        return `- ${e.title} at ${e.company} (${period})${description}`;\n      })\n      .join('\\n');\n\n    const education = (f.education || [])\n      .map(e => `- ${e.degree_name}, ${e.school}`)\n      .join('\\n');\n\n    return `FOUNDER: ${f.full_name}\nLocation: ${f.country}\nFollowers: ${f.follower_count}\n\nProfile Summary:\n${shortSummary}\n\nTop Experience:\n${exp}\n\nEducation:\n${education}`;\n  })\n  .join('\\n\\n----------------------\\n\\n')\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1984,
+        -496
+      ],
+      "id": "45dbd67c-cb6c-439a-9542-45e25078583d",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        -48
+      ],
+      "id": "f4bfae29-e430-40fe-a54e-2e608fdcba36",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "ROLE\nYou are an early-stage venture capital analyst evaluating pre-seed and seed startups.\n\n====\n\nGOAL\nYour job is to EVALUATE, not summarize. Produce judgments, not descriptions.\n\n====\n\nTONE:\n- Be analytical and skeptical. Avoid generic praise and vague language.\n- If information is missing, say what is missing and how that reduces conviction.\n\n====\n\nOUTPUT REQUIREMENTS:\n1. \"decision\": Final decision should be priority: 1, 2 or 3.\n2. \"comment\": why this decision\n\n====\n\nFACTORS EVALUATION (estimate only these factors):\n\n1. TEAM\ni. Doer / Entrepreneurship: Evaluate whether the founders are builders who have shipped real products or led execution during their career.\nii. Market Expertise: Assess whether the team has sufficient domain experience, worked in similar domain.\n\n2. MARKET\ni. Market Size: Evaluate whether the market is realistically large enough to support a $1B+ outcome and whether TAM claims are credible rather than inflated.\nii. Timing: Assess whether there is a real “why now” driven by technological, regulatory, behavioral, or cost structure shifts.\niii. Competition: Evaluate how crowded the space is and whether the startup has a believable path to differentiation or structural advantage.\n\nWhen evaluating TEAM:\n- ONLY consider experience PRIOR to the current role.\n- DO NOT treat founding the current company as evidence of execution.\n- If a founder’s only startup experience is the CURRENT company being evaluated, this MUST NOT be counted as Doer evidence.\n\nIMPORTANT CLARIFICATIONS ON EXPERIENCE QUALITY:\nStrong Doer signals include:\n- Prior founder with shipped product\n- C-level role in VC-backed tech startup\n- Led engineering/product teams that built and launched products\n- Built revenue-generating product from 0→1\n\nWeak Doer signals include:\n- Pure consulting / advisory roles (Experience in large consulting firms (e.g., McKinsey, BCG, Bain, EY Advisory, Capgemini, etc.) should NOT be considered strong Doer evidence.)\n- Corporate strategy roles without product ownership\n- Non-technical corporates \n====\n\nSCORING LOGIC:\nTeam factor, especially doer/entrepreneurship plays key role in a decision and should account for 80% of estimation. Market opportunity is the next building block and it should account for 20% of the decision.\n\nDecision = 1 (High Priority)\nIf:\n→ GOOD Doer / Entrepreneurship factor in team\n\nDecision = 2 (Medium Priority)\nIf:\n→ ONLY IF Doer factor is MID AND Market expertise is STRONG AND Market factor is STRONG.\n\nDecision = 3 (Low Priority / Pass)\n→ Not priority 1 or 2\n→  company 4+ years since founding (too old)\n\nIMPORTANT: Missing/unclear market size data must NOT prevent Decision = 1 if the team factor is high. In that case, keep Decision = 1 and explicitly state: \"Market sizing is not fully validated; conviction reduced slightly.\"",
+              "role": "system"
+            },
+            {
+              "content": "=TEAM DATA:\n{{ $json['Team data'] }}\n\nMarket and company info:\n{{ $json['Market data'] }}\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2256,
+        272
+      ],
+      "id": "7432705f-4a5b-45ec-8762-160e9419fbf8",
+      "name": "Give recommendation1",
+      "credentials": {
+        "openAiApi": {
+          "id": "8pOWwn1fLJNoM7R8",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs",
+          "mode": "list",
+          "cachedResultName": "RV Screener",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2016,
+        272
+      ],
+      "id": "ce0707a9-553e-457c-addc-baad4816bb2f",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IWDw76cHQTbMpcT9",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs",
+          "mode": "list",
+          "cachedResultName": "RV Screener",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Priority": "={{ $json.message.content.decision }}",
+            "Comments": "={{ $json.message.content.comment }}",
+            "Make analysis": "Done",
+            "Founder website": "=",
+            "Company website": "={{ $json['Company website'] }}"
+          },
+          "matchingColumns": [
+            "Company website"
+          ],
+          "schema": [
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Founder website",
+              "displayName": "Founder website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Make analysis",
+              "displayName": "Make analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Team data",
+              "displayName": "Team data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Market data",
+              "displayName": "Market data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3184,
+        288
+      ],
+      "id": "6433c793-dae8-4953-a07e-425b610c63ff",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IWDw76cHQTbMpcT9",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2800,
+        368
+      ],
+      "id": "388b76f9-fda8-4dad-92a5-2846d40f3627",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/anchor~linkedin-profile-enrichment/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer apify_api_ZOacg7dhxRGzlf84hTnXkhoqxrPtGt2t3t6x"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n{\n  startUrls: ($json[\"Founder Linkedins\"] || \"\")\n  .split(\",\")\n  .map(u => u.replace(/[\\u200B-\\u200D\\uFEFF\\u2060]/g, \"\").trim()) // remove invisible chars + trim\n  .filter(u => /^https?:\\/\\/.+/i.test(u))\n  .map((u, i) => ({ url: u, id: String(i + 1) }))\n}\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1088,
+        -112
+      ],
+      "id": "d381ed64-18e3-4063-83c9-cc0e5b3663c1",
+      "name": "HTTP Request5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1ed670df-b8f9-4ff7-b8fe-b98278e45a91",
+              "name": "full_name",
+              "value": "={{ $json.full_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c78258a4-044d-4a86-9001-bece459887d5",
+              "name": "summary",
+              "value": "={{ $json.summary }}",
+              "type": "string"
+            },
+            {
+              "id": "dd176a6e-af8f-4ceb-b5cb-58b92aa9bd10",
+              "name": "follower_count",
+              "value": "={{ $json.follower_count }}",
+              "type": "number"
+            },
+            {
+              "id": "2036c0d7-fcac-40ca-a34a-1ecbbdb87ce6",
+              "name": "experiences",
+              "value": "={{ $json.experiences.slice(0, 10) }}",
+              "type": "array"
+            },
+            {
+              "id": "7fce47fb-966b-4f70-b379-c4b25ed29559",
+              "name": "education",
+              "value": "={{ $json.education }}",
+              "type": "array"
+            },
+            {
+              "id": "7d2ee25f-5ede-4159-ae2f-60c23c4e9f7a",
+              "name": "languages",
+              "value": "={{ $json.languages }}",
+              "type": "array"
+            },
+            {
+              "id": "a662b412-0774-41f8-b4dd-3196a409802d",
+              "name": "company_name",
+              "value": "={{ $json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "75083db5-5119-4571-a306-2b591b3df812",
+              "name": "company_website",
+              "value": "={{ $json.company_website }}",
+              "type": "string"
+            },
+            {
+              "id": "bc71a04d-d927-42bb-a52d-dceaf273b2c7",
+              "name": "company_linkedin",
+              "value": "={{ $json.company_linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "61b254d5-6c61-41ec-b934-f35af749a05d",
+              "name": "company_founded_in",
+              "value": "={{ $json.company_founded_in }}",
+              "type": "number"
+            },
+            {
+              "id": "320f1ae4-200a-4f29-a1f5-98a47f1a2414",
+              "name": "company_size",
+              "value": "={{ $json.company_size }}",
+              "type": "string"
+            },
+            {
+              "id": "9df53e24-77b4-4c88-bb40-483e137f1c3d",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "8cfb6d1f-ae37-41c5-bcb8-4ea35d3d9405",
+              "name": "country",
+              "value": "={{ $json.country }}",
+              "type": "string"
+            },
+            {
+              "id": "8a691b56-25a0-4c78-9b1f-b10f848ab595",
+              "name": "city",
+              "value": "={{ $json.city }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        -112
+      ],
+      "id": "63ff1357-c584-482f-85b3-ee68a9c62623",
+      "name": "Set fields1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -112
+      ],
+      "id": "f6ef7a83-9911-464a-82ed-8ef2b373ba18",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6a72615-2a0d-421a-a811-43ae5ef7d77f",
+              "name": "=data",
+              "value": "={{ \n$('Aggregate2').item.json.data\n  .map(f => {\n\n    const shortSummary = (f.summary || '')\n      .replace(/\\n/g, ' ')\n      .slice(0, 300);\n\n    const exp = (f.experiences || [])\n      .slice(0,5)\n      .map(e => {\n        const period = `${e.starts_at || ''}${e.ends_at ? '–' + e.ends_at : ''}`;\n        const description = e.description && e.description !== 'empty'\n          ? `\\n   ▪ ${e.description}`\n          : '';\n        return `- ${e.title} at ${e.company} (${period})${description}`;\n      })\n      .join('\\n');\n\n    const education = (f.education || [])\n      .map(e => `- ${e.degree_name}, ${e.school}`)\n      .join('\\n');\n\n    return `FOUNDER: ${f.full_name}\nLocation: ${f.country}\nFollowers: ${f.follower_count}\n\nProfile Summary:\n${shortSummary}\n\nTop Experience:\n${exp}\n\nEducation:\n${education}`;\n  })\n  .join('\\n\\n----------------------\\n\\n')\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1744,
+        -112
+      ],
+      "id": "d2026263-3463-400b-b3a7-75e2259dce0a",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "ROLE\nYou are an early-stage venture capital analyst evaluating pre-seed and seed startups.\n\n====\n\nGOAL\nYour job is to EVALUATE, not summarize. Produce judgments, not descriptions.\n\n====\n\nTONE:\n- Be analytical and skeptical. Avoid generic praise and vague language.\n- If information is missing, say what is missing and how that reduces conviction.\n\n====\n\nOUTPUT REQUIREMENTS:\n1. \"decision\": Final decision should be priority: 1, 2 or 3.\n2. \"comment\": why this decision\n\n====\n\nFACTORS EVALUATION (estimate only these factors):\n\n1. TEAM\ni. Doer / Entrepreneurship: Evaluate whether the founders are builders who have shipped real products or led execution during their career.\nii. Market Expertise: Assess whether the team has sufficient domain experience, worked in similar domain.\n\nWhen evaluating TEAM:\n- ONLY consider experience PRIOR to the current role.\n- DO NOT treat founding the current company as evidence of execution.\n- If a founder’s only startup experience is the CURRENT company being evaluated, this MUST NOT be counted as Doer evidence.\n\nIMPORTANT CLARIFICATIONS ON EXPERIENCE QUALITY:\nStrong Doer signals include:\n- Prior founder with shipped product\n- C-level role in VC-backed tech startup\n- Led engineering/product teams that built and launched products\n- Built revenue-generating product from 0→1\n\nWeak Doer signals include:\n- Pure consulting / advisory roles (Experience in large consulting firms (e.g., McKinsey, BCG, Bain, EY Advisory, Capgemini, etc.) should NOT be considered strong Doer evidence.)\n- Corporate strategy roles without product ownership\n- Non-technical corporates \n====\n\nSCORING LOGIC:\nTeam factor, especially doer/entrepreneurship plays key role in a decision.\n\nDecision = 1 (High Priority)\nIf:\n→ GOOD Doer / Entrepreneurship factor in team\n\nDecision = 2 (Medium Priority)\nIf:\n→ ONLY IF Doer factor is MID AND Market expertise is STRONG AND\n\nDecision = 3 (Low Priority / Pass)\n→ Not priority 1 or 2",
+              "role": "system"
+            },
+            {
+              "content": "=TEAM DATA:\n{{ JSON.stringify($json.data, null, 2) }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2272,
+        -128
+      ],
+      "id": "c21868e4-da74-4283-9508-f60de5acaa1d",
+      "name": "Give recommendation2",
+      "credentials": {
+        "openAiApi": {
+          "id": "8pOWwn1fLJNoM7R8",
+          "name": "OpenAi account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs",
+          "mode": "list",
+          "cachedResultName": "RV Screener",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Et0oWYK15pr5WLXNG1JOZrpjWTEg9lVwkVPmS0f-uHs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Priority": "={{ $json.message.content.decision }}",
+            "Comments": "={{ $json.message.content.comment }}",
+            "Make analysis": "Done",
+            "Team data": "={{\n  $(\"Edit Fields4\").item.json.data\n}}",
+            "Founder Linkedins": "={{ $('Get row(s) in sheet1').item.json['Founder Linkedins'] }}"
+          },
+          "matchingColumns": [
+            "Founder Linkedins"
+          ],
+          "schema": [
+            {
+              "id": "Company website",
+              "displayName": "Company website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Founder Linkedins",
+              "displayName": "Founder Linkedins",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Make analysis",
+              "displayName": "Make analysis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comments",
+              "displayName": "Comments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Team data",
+              "displayName": "Team data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Market data",
+              "displayName": "Market data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2848,
+        -128
+      ],
+      "id": "a04ea770-d0f1-4b61-82ea-1baa8e6418db",
+      "name": "Append or update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IWDw76cHQTbMpcT9",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c8b67604-d0cf-4c24-a12d-4ed487473090",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -832,
+        -48
+      ],
+      "id": "fcf510da-c0d3-45bc-b54e-e039d4b62b4d",
+      "name": "Webhook",
+      "webhookId": "c8b67604-d0cf-4c24-a12d-4ed487473090"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Give recommendation": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Set fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fields": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Give recommendation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Give recommendation1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Give recommendation1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fields1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Set fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Give recommendation2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Give recommendation2": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a7ce2d84-d637-4cd1-bf32-f19e27b4f1ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a857b8eaad804a21de99f443c3612887d6b4828f9b3ed33c1bd35d336a052387"
+  },
+  "id": "kjjMIskQNCDXm3gW",
+  "tags": []
+}

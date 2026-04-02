@@ -18,5 +18,13 @@ def research_market(company_website: str) -> str:
     system = load_prompt("market_research_system.md")
     user = f"Research market opportunity for this company: {company_website}"
     result = run_agent_with_web_search(system=system, user=user, max_tokens=1500)
+
+    # Strip any preamble before the first section header — the model narrates its
+    # research process despite prompt instructions; slicing is more reliable than prompting.
+    marker = "## MARKET SIZE"
+    idx = result.find(marker)
+    if idx > 0:
+        result = result[idx:]
+
     print(f"[market_researcher] Done ({len(result)} chars)")
     return result

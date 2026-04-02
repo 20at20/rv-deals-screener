@@ -3,7 +3,7 @@ Agent: VC Screener
 Layer: A (Agent) — AI reasoning, returns structured JSON
 
 Takes formatted team data + market research text and produces a VC score.
-Output: {"decision": 1|2|3, "comment": "..."}
+Output: {"decision": 0|1|2|3, "comment": "..."}
 """
 
 from tools.claude_client import load_prompt, run_agent_json
@@ -14,7 +14,8 @@ def score_deal(team_data: str, market_data: str) -> dict:
     Score a startup deal based on team and market data.
 
     Returns:
-        {"decision": int (1, 2, or 3), "comment": str}
+        {"decision": int (0, 1, 2, or 3), "comment": str}
+        - 0 = Disqualified (hard red flag confirmed with 100% certainty)
         - 1 = High Priority
         - 2 = Medium Priority
         - 3 = Low Priority / Pass
@@ -29,9 +30,9 @@ def score_deal(team_data: str, market_data: str) -> dict:
     comment = result.get("comment", "")
     conviction = result.get("conviction", "")
 
-    if decision not in (1, 2, 3):
+    if decision not in (0, 1, 2, 3):
         raise ValueError(
-            f"[vc_screener] Invalid decision value: {decision!r}. Expected 1, 2, or 3."
+            f"[vc_screener] Invalid decision value: {decision!r}. Expected 0, 1, 2, or 3."
         )
 
     print(f"[vc_screener] Decision: {decision} | Conviction: {conviction}")

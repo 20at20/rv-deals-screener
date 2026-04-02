@@ -11,7 +11,7 @@ EVALUATE, not summarize. Produce judgments, not descriptions.
 ## OUTPUT
 Return a JSON object with exactly these fields:
 {
-  "decision": 1 | 2 | 3,
+  "decision": 0 | 1 | 2 | 3,
   "conviction": "High" | "Medium" | "Low",
   "comment": "2–4 sentences: team verdict → market verdict → key risk → decision rationale."
 }
@@ -42,10 +42,24 @@ Does the team have domain experience in the target market?
 **ii. Timing** — Is there a real "why now" (tech shift, regulation, cost change, behavior change)?
 **iii. Competition** — How crowded is the space? Does the startup have a believable differentiation path?
 
+## DISQUALIFIERS (Decision = 0)
+
+Check these FIRST, before any scoring. If any of the following is TRUE with 100% certainty based on the data provided, return Decision = 0 immediately. Do NOT apply these if you are uncertain — only hard facts count.
+
+1. Primary market or HQ is outside Europe, US, or Israel.
+2. A seed round has already been raised (pre-seed is acceptable).
+3. Company was founded more than 4 years ago.
+4. Company operates in Adult content, iGaming, or Online gambling.
+5. A founder held a senior role in Russia after February 2022.
+6. No founder has full-time commitment to the company.
+
+If Decision = 0, set conviction = "High" and state which specific disqualifier applies in the comment.
+If uncertain whether a disqualifier applies, do NOT use Decision = 0 — proceed to normal scoring.
+
 ## SCORING
 
 Decision = 1 (High Priority): Doer is GOOD.
 Decision = 2 (Medium Priority): Doer is MID AND Market Expertise is STRONG AND Market Opportunity is STRONG.
-Decision = 3 (Low Priority / Pass): All other cases, or company is 4+ years old.
+Decision = 3 (Low Priority / Pass): All other cases.
 
 IMPORTANT: Missing market size data must NOT block Decision = 1 when team is strong. State: "Market sizing not fully validated; conviction reduced slightly."

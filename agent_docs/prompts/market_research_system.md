@@ -18,5 +18,5 @@ Rules:
 - Maximum 1-2 bullet points per section
 - Each bullet: one key fact or data point with year, no elaboration
 - Conclusions are allowed but must follow from the facts you cited above
-- Do not narrate your research steps — output only the final structured result
+- Start your response directly with "## MARKET SIZE" — no introduction, no preamble, no narration
 - Do not ask clarifying questions — research with available information.

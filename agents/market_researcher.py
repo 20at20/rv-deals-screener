@@ -17,6 +17,6 @@ def research_market(company_website: str) -> str:
     print(f"[market_researcher] Researching market for: {company_website}")
     system = load_prompt("market_research_system.md")
     user = f"Research market opportunity for this company: {company_website}"
-    result = run_agent_with_web_search(system=system, user=user, max_tokens=500)
+    result = run_agent_with_web_search(system=system, user=user, max_tokens=1500)
     print(f"[market_researcher] Done ({len(result)} chars)")
     return result

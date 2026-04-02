@@ -152,8 +152,8 @@ def screen_all_deals(sheet_id: str) -> None:
 
         if i < len(rows) - 1:
             # Wait between companies to let Anthropic rate limit bucket refill (50K tokens/min free tier)
-            print("[workflow] Waiting 60s before next company to avoid rate limit...")
-            time.sleep(60)
+            print("[workflow] Waiting 5s before next company...")
+            time.sleep(5)
 
     print(f"\n[workflow] Run complete. {len(rows) - len(errors)}/{len(rows)} succeeded.")
     if errors:

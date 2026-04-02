@@ -104,7 +104,7 @@ def run_agent_with_web_search(
 
     messages = [{"role": "user", "content": user}]
     final_text = ""
-    max_iterations = 5
+    max_iterations = 2
 
     for _ in range(max_iterations):
         response = _call_with_retry(

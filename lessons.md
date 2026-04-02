@@ -35,5 +35,9 @@ Each entry: what went wrong → rule that prevents it from happening again.
 **What went wrong:** Railway env var was named `GOOGLE_CREDENTIALS_PATH` but set to the JSON content (not a file path). The code tried to open the JSON string as a filename and crashed with `FileNotFoundError`.
 **Rule:** When deploying to Railway (or any cloud), always use `GOOGLE_CREDENTIALS_JSON` (the JSON content as a string). `GOOGLE_CREDENTIALS_PATH` is only for local runs where the file actually exists on disk. `tools/sheets.py` already handles both — just use the right variable name.
 
+### 7. Strip unwanted model preamble in code, not via prompt instructions
+**What went wrong:** The market researcher prompt said "Start directly with ## MARKET SIZE — no preamble". The model still narrated its entire research process ("I'll research...", "Now I have a clear picture...", "Perfect. Now I have...") before the structured output on every run.
+**Rule:** When you need output to start at a specific marker, find that marker in code and slice. `result = result[result.find("## MARKET SIZE"):]` is reliable; prompt instructions for format suppression are not.
+
 ---
 *Last updated: 2026-04-03*

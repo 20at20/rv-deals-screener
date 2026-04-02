@@ -10,6 +10,7 @@ commit, so any version can be restored via `git checkout <sha>`.
 """
 
 import os
+from datetime import datetime, timezone
 
 import tools.github_client as github_client
 import tools.sheets as sheets
@@ -85,7 +86,18 @@ def run_refinement(sheet_id: str) -> None:
     else:
         print(f"[refine_prompts] Updated: {', '.join(changed)}")
 
-    # ── 6. Mark feedback rows as implemented ──────────────────────────────────
+    # ── 6. Append to CHANGELOG.md ─────────────────────────────────────────────
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    changed_str = ", ".join(changed) if changed else "no prompts changed"
+    entry = f"{timestamp} | {len(feedback_cases)} cases | {changed_str}\n"
+    current_log = github_client.read_file("CHANGELOG.md")
+    github_client.update_file(
+        path="CHANGELOG.md",
+        content=current_log + entry,
+        commit_message=f"Changelog: refinement run ({len(feedback_cases)} cases)",
+    )
+
+    # ── 7. Mark feedback rows as implemented ──────────────────────────────────
     for row in feedback_rows:
         match_col = "Company website" if row.get("Company website") else "Founder Linkedins"
         match_val = (row.get("Company website") or row.get("Founder Linkedins") or "").strip()

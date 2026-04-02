@@ -37,6 +37,21 @@ def _repo() -> str:
     return repo
 
 
+def read_file(path: str) -> str:
+    """
+    Read a file's content from the GitHub repo.
+    Returns empty string if the file does not exist.
+    """
+    repo = _repo()
+    headers = _headers()
+    url = f"{GITHUB_API}/repos/{repo}/contents/{path}"
+    resp = httpx.get(url, headers=headers, timeout=TIMEOUT)
+    if resp.status_code == 404:
+        return ""
+    resp.raise_for_status()
+    return base64.b64decode(resp.json()["content"]).decode("utf-8")
+
+
 def update_file(path: str, content: str, commit_message: str) -> None:
     """
     Create or update a file in the GitHub repo.

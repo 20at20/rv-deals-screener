@@ -18,9 +18,10 @@ Each entry: what went wrong → rule that prevents it from happening again.
 **What went wrong:** The `while True` loop had no limit. With a detailed prompt, Claude issued 5+ consecutive searches, making the run take many minutes and hit rate limits repeatedly.
 **Rule:** Always set `max_iterations` (e.g. 5) on the web search agentic loop. This caps runtime and API usage without meaningfully reducing research quality.
 
-### 3. Prompt instructions alone don't reliably control output length
-**What went wrong:** Adding "be concise" and "1-2 bullets per section" to the market research prompt still produced 4,000–6,000 char outputs with full markdown headers and a conclusion essay.
-**Rule:** Use `max_tokens` to mechanically enforce output length. For short research summaries, pass `max_tokens=500`. Prompt instructions guide format; token caps enforce length.
+### 3. Calibrate max_tokens to fit the full expected output, not just suppress verbosity
+**What went wrong (v1):** Adding "be concise" and "1-2 bullets per section" still produced 4,000–6,000 char outputs. Fixed by adding `max_tokens=500`.
+**What went wrong (v2):** `max_tokens=500` cut the market research output mid-sentence — Claude's preamble narration ate into the budget before the structured content started.
+**Rule:** Set `max_tokens` high enough to complete the full expected output. For 3-section market research: 1500 tokens. Also instruct the prompt to start directly with section headers ("Start with ## MARKET SIZE") to eliminate preamble that wastes the budget.
 
 ### 4. LinkedIn experience descriptions bloat tokens significantly
 **What went wrong:** `_format_team_profiles` included full job description text for each experience entry. With 3 founders, this exceeded the free-tier 50K tokens/min rate limit on every call.
@@ -35,4 +36,4 @@ Each entry: what went wrong → rule that prevents it from happening again.
 **Rule:** When deploying to Railway (or any cloud), always use `GOOGLE_CREDENTIALS_JSON` (the JSON content as a string). `GOOGLE_CREDENTIALS_PATH` is only for local runs where the file actually exists on disk. `tools/sheets.py` already handles both — just use the right variable name.
 
 ---
-*Last updated: 2026-04-02*
+*Last updated: 2026-04-03*

@@ -18,6 +18,7 @@ Steps per company:
 
 import os
 import re
+import time
 
 import tools.apify as apify
 import tools.sheets as sheets
@@ -141,13 +142,18 @@ def screen_all_deals(sheet_id: str) -> None:
         return
 
     errors = []
-    for row in rows:
+    for i, row in enumerate(rows):
         try:
             process_one_deal(sheet_id, row)
         except Exception as e:
             company = row.get("Company website") or row.get("Founder Linkedins") or "unknown"
             print(f"[workflow] ERROR processing '{company}': {e}")
             errors.append((company, str(e)))
+
+        if i < len(rows) - 1:
+            # Wait between companies to let Anthropic rate limit bucket refill (50K tokens/min free tier)
+            print("[workflow] Waiting 60s before next company to avoid rate limit...")
+            time.sleep(60)
 
     print(f"\n[workflow] Run complete. {len(rows) - len(errors)}/{len(rows)} succeeded.")
     if errors:

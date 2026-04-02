@@ -48,6 +48,20 @@ def get_pending_rows(sheet_id: str, sheet_name: str = "Sheet1") -> list[dict]:
     return pending
 
 
+def get_feedback_rows(sheet_id: str, sheet_name: str = "Sheet1") -> list[dict]:
+    """Return rows where 'Analyst Note' is non-empty and 'Analyst Implemented' != 'Yes'."""
+    client = _get_client()
+    sheet = client.open_by_key(sheet_id).worksheet(sheet_name)
+    all_rows = sheet.get_all_records()
+    feedback = [
+        row for row in all_rows
+        if row.get("Analyst Note", "").strip()
+        and row.get("Analyst Implemented", "").strip() != "Yes"
+    ]
+    print(f"[sheets] Found {len(feedback)} unprocessed feedback rows in '{sheet_name}'")
+    return feedback
+
+
 def update_row(
     sheet_id: str,
     sheet_name: str,

@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from workflows.screen_deals import screen_all_deals
+from workflows.refine_prompts import run_refinement
 
 app = Flask(__name__)
 
@@ -35,6 +36,20 @@ def run():
     thread.start()
 
     return jsonify({"status": "Run started"}), 202
+
+
+@app.route("/refine", methods=["POST"])
+def refine():
+    if WEBHOOK_SECRET and request.headers.get("X-Webhook-Secret") != WEBHOOK_SECRET:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    if not GOOGLE_SHEET_ID:
+        return jsonify({"error": "GOOGLE_SHEET_ID not configured"}), 500
+
+    thread = threading.Thread(target=run_refinement, args=(GOOGLE_SHEET_ID,), daemon=True)
+    thread.start()
+
+    return jsonify({"status": "Refinement started"}), 202
 
 
 if __name__ == "__main__":

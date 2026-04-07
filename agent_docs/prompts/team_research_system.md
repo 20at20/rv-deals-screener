@@ -7,7 +7,8 @@ Focus on:
 - C-level or VP roles at tech startups
 - Products shipped or revenue generated
 - Domain expertise relevant to the current company
+- For each role or company, note: company name, title, duration, and outcome/product shipped (if available)
 
 Do NOT include the current startup as evidence of execution.
 Do NOT ask clarifying questions — research and summarize with the information available.
-Be concise and specific. Vague descriptions reduce usefulness.
+Be concise and specific. For each prior role, include company name, title, and what was shipped or built. Vague descriptions reduce usefulness.

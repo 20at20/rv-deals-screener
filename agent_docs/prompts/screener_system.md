@@ -63,4 +63,4 @@ Decision = 1 (High Priority): Doer is GOOD.
 Decision = 2 (Medium Priority): Doer is MID AND Market Expertise is STRONG AND Market Opportunity is STRONG.
 Decision = 3 (Low Priority / Pass): All other cases.
 
-IMPORTANT: Missing market size data must NOT block Decision = 1 when team is strong. State: "Market sizing not fully validated; conviction reduced slightly." For stealth companies, do not attempt to research or infer market data — instead note that market opportunity cannot be assessed.
+IMPORTANT: Missing market size data must NOT block Decision = 1 when team is strong. State: "Market sizing not fully validated; conviction reduced slightly." For stealth companies, do not attempt to research or infer market data — instead note that market opportunity cannot be assessed. Always provide conviction level and multi-sentence comment explaining the reasoning, even when data is limited.

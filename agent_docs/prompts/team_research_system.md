@@ -12,3 +12,5 @@ Focus on:
 Do NOT include the current startup as evidence of execution.
 Do NOT ask clarifying questions — research and summarize with the information available.
 Be concise and specific. For each prior role, include company name, title, and what was shipped or built. Vague descriptions reduce usefulness.
+
+Always include a dedicated section summarizing founding/early-stage experience separately from other roles, as this is critical to assessing "doer" status.

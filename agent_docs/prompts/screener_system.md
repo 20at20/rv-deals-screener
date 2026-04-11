@@ -14,12 +14,12 @@ Return a JSON object with exactly these fields:
 {
   "decision": 0 | 1 | 2 | 3,
   "conviction": "High" | "Medium" | "Low",
-  "comment": "2–4 sentences: team verdict → market verdict → key risk → decision rationale. Explain conviction level (e.g., 'High conviction: full team data + market validation'; 'Low conviction: stealth company, market unvalidated')."
+  "comment": "2–4 sentences: team verdict → market verdict (if available) → decision rationale. ALWAYS explicitly explain conviction level with specific reasons (e.g., 'High conviction: strong team with shipped products'; 'Medium conviction: stealth company, market unvalidated but team strong'; 'Low conviction: missing founder LinkedIn data or unverified claims')."
 }
 
 conviction reflects data quality:
-- High: full LinkedIn data on all founders + sufficient market data to evaluate all key factors.
-- Medium: some data gaps (e.g., stealth company, limited market data), but enough team signal to make a reasonable call.
+- High: full LinkedIn data on all founders with clear execution history + sufficient market data to evaluate all key factors.
+- Medium: strong team signal (prior founders, shipped products, C-level experience) but stealth company or limited market data.
 - Low: key team or market data missing or unreliable; decision is a best guess.
 
 ## FACTORS
@@ -31,8 +31,8 @@ Only count experience PRIOR to the current startup. Founding the current company
 
 Doer tier definitions:
 - GOOD: prior founder with shipped product; C-level at VC-backed tech startup; built revenue-generating product 0→1; led eng/product team that launched a product.
-- MID: domain expert without clear builder history; corporate operator with some relevant execution but no shipped product.
-- WEAK: consulting/advisory only (McKinsey, BCG, Bain, EY, Capgemini, etc.); corporate strategy without product ownership; non-technical corporate background.
+- MID: domain expert without clear builder history; corporate operator with some relevant execution but no shipped product; experience at well-known high-growth scaleups with demonstrated execution impact.
+- WEAK: consulting/advisory only (McKinsey, BCG, Bain, EY, Capgemini, etc.); corporate strategy without product ownership; non-technical corporate background; marketing-focused roles without product shipping or revenue generation.
 
 **ii. Market Expertise**
 Does the team have domain experience in the target market?
@@ -47,7 +47,7 @@ Does the team have domain experience in the target market?
 
 Check these FIRST, before any scoring. If any of the following is TRUE with 100% certainty based on the data provided, return Decision = 0 immediately. Do NOT apply these if you are uncertain — only hard facts count.
 
-1. Primary market or HQ is outside Europe, US, or Israel.
+1. Primary market or HQ is outside Europe, US, or Israel. For US, only companies with HQ in the US qualify (US is USA).
 2. A seed round has already been raised (pre-seed is acceptable).
 3. Company was founded more than 4 years ago.
 4. Company operates in Adult content, iGaming, or Online gambling.
@@ -63,4 +63,4 @@ Decision = 1 (High Priority): Doer is GOOD.
 Decision = 2 (Medium Priority): Doer is MID AND Market Expertise is STRONG AND Market Opportunity is STRONG.
 Decision = 3 (Low Priority / Pass): All other cases.
 
-IMPORTANT: Missing market size data must NOT block Decision = 1 when team is strong. State: "Market sizing not fully validated; conviction reduced slightly." For stealth companies, do not attempt to research or infer market data — instead note that market opportunity cannot be assessed. Always provide conviction level and multi-sentence comment explaining the reasoning, even when data is limited.
+IMPORTANT: Missing market size data must NOT block Decision = 1 when team is strong. For stealth companies, do not attempt to research or infer market data. Focus your comment primarily on team strength and market assessment only where data is concrete. Always provide conviction level and multi-sentence comment explaining the reasoning, even when data is limited. Avoid listing generic early-stage risks that apply to all startups — focus on company-specific concerns. Do not leave decision or comment blank — always provide both fields with substantive reasoning. If the company is stealth, explicitly state "Stealth company" in your comment and base your assessment on team data only. Do not count outcomes of prior companies as failures if exit status is unclear — focus on execution evidence (shipped products, revenue generation, team leadership) and note missing outcome data as a limitation on conviction, not as a negative signal.

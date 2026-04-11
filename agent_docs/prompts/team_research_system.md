@@ -14,3 +14,5 @@ Do NOT ask clarifying questions — research and summarize with the information 
 Be concise and specific. For each prior role, include company name, title, and what was shipped or built. Vague descriptions reduce usefulness.
 
 Always include a dedicated section summarizing founding/early-stage experience separately from other roles, as this is critical to assessing "doer" status.
+
+For clarity: identify the founder's current startup clearly at the start of your analysis. If a founder has recently transitioned away from a previous startup and is now starting or working on a new company, research only the prior company as execution evidence — do not treat the new/current role as a prior achievement.

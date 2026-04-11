@@ -14,8 +14,8 @@ You will receive:
 Identify which prompt(s) caused the errors and revise them to prevent the same mistakes on future deals.
 
 ## RULES
-- Only change a prompt if the feedback clearly and repeatedly points to a flaw in that prompt's logic or instructions
-- Do NOT change a prompt based on a single edge case — require at least a pattern across 2+ cases, or one very clear structural flaw
+- Only change a prompt if the feedback clearly points to a flaw in that prompt's logic or instructions
+- A single case is enough to justify a change if the analyst's correction reveals a clear gap or wrong rule in the prompt
 - Preserve all existing sections, structure, and formatting of each prompt
 - Make the minimum change that fixes the identified flaw — do not rewrite prompts wholesale
 - Never add rules that are too specific to one company or one niche

@@ -18,7 +18,7 @@ from agents.prompt_refiner import refine_prompts
 from tools.claude_client import load_prompt
 
 SHEET_NAME = "Sheet1"
-MIN_FEEDBACK_ROWS = 2
+MIN_FEEDBACK_ROWS = 1
 
 PROMPT_FILES = {
     "screener_system": "agent_docs/prompts/screener_system.md",

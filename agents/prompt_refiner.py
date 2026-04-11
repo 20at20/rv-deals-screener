@@ -59,7 +59,7 @@ FEEDBACK CASE:
 {json.dumps(case, indent=2, ensure_ascii=False)}
 """
 
-        result = run_agent_json(system=system, user=user)
+        result = run_agent_json(system=system, user=user, max_tokens=8192)
 
         for key in ("screener_system", "market_research_system", "team_research_system"):
             if key not in result:

@@ -58,6 +58,7 @@ def run_agent(
     user: str,
     tools: list | None = None,
     model: str | None = None,
+    max_tokens: int = 2048,
 ) -> str:
     """
     Call Claude and return the text response.
@@ -68,7 +69,7 @@ def run_agent(
 
     kwargs: dict = {
         "model": resolved_model,
-        "max_tokens": 2048,
+        "max_tokens": max_tokens,
         "system": system,
         "messages": [{"role": "user", "content": user}],
     }
@@ -145,13 +146,14 @@ def run_agent_json(
     system: str,
     user: str,
     model: str | None = None,
+    max_tokens: int = 2048,
 ) -> dict:
     """
     Call Claude and parse the response as JSON.
     Claude is instructed to respond with a JSON object only.
     """
     json_instruction = "\n\nIMPORTANT: Respond with a valid JSON object only. No markdown, no explanation outside the JSON."
-    text = run_agent(system + json_instruction, user, model=model)
+    text = run_agent(system + json_instruction, user, model=model, max_tokens=max_tokens)
 
     # Strip markdown code fences if present
     text = re.sub(r"^```(?:json)?\s*", "", text.strip())

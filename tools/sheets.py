@@ -55,7 +55,7 @@ def get_feedback_rows(sheet_id: str, sheet_name: str = "Sheet1") -> list[dict]:
     all_rows = sheet.get_all_records()
     feedback = [
         row for row in all_rows
-        if row.get("Analyst Decision", "").strip()
+        if str(row.get("Analyst Decision", "")).strip()
         and row.get("Analyst Implemented", "").strip() != "Yes"
     ]
     print(f"[sheets] Found {len(feedback)} unprocessed feedback rows in '{sheet_name}'")

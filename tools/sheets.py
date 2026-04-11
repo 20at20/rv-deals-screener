@@ -86,7 +86,7 @@ def update_row(
     row_index = None
 
     for i, row in enumerate(all_values[1:], start=2):  # skip header, 1-indexed
-        if len(row) > match_col_idx and row[match_col_idx] == match_val:
+        if len(row) > match_col_idx and row[match_col_idx].strip() == match_val:
             row_index = i
             break
 

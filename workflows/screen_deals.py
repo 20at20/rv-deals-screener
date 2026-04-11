@@ -22,7 +22,7 @@ import time
 
 import tools.apify as apify
 import tools.sheets as sheets
-from agents.market_researcher import research_market
+from agents.market_researcher import research_market, summarize_market
 from agents.team_researcher import research_team
 from agents.vc_screener import score_deal
 
@@ -111,7 +111,8 @@ def process_one_deal(sheet_id: str, row: dict) -> None:
     market_data = research_market(company_website) if company_website else ""
 
     # ── 5. Score ─────────────────────────────────────────────────────────
-    result = score_deal(team_data=team_data, market_data=market_data)
+    market_summary = summarize_market(market_data)
+    result = score_deal(team_data=team_data, market_data=market_summary)
 
     # ── 6. Write back ─────────────────────────────────────────────────────
     conviction = result.get("conviction", "")

@@ -49,7 +49,11 @@ def _format_team_profiles(profiles: list[dict]) -> str:
             starts = e.get("starts_at") or ""
             ends = e.get("ends_at") or ""
             period = f"{starts}–{ends}" if ends else starts
-            exp_lines.append(f"- {e.get('title')} at {e.get('company')} ({period})")
+            description = (e.get("description") or "").strip()
+            line = f"- {e.get('title')} at {e.get('company')} ({period})"
+            if description:
+                line += f"\n  {description[:300]}"
+            exp_lines.append(line)
 
         edu_lines = [
             f"- {e.get('degree_name')}, {e.get('school')}"

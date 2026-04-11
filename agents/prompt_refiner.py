@@ -18,7 +18,7 @@ def refine_prompts(
     team_prompt: str,
 ) -> dict:
     """
-    Revise the 3 system prompts based on analyst feedback.
+    Revise the 3 system prompts based on analyst feedback, processing one case at a time.
 
     Args:
         feedback_cases: list of {company, ai_decision, analyst_decision, analyst_note}
@@ -32,28 +32,40 @@ def refine_prompts(
     print(f"[prompt_refiner] Refining prompts based on {len(feedback_cases)} feedback cases...")
     system = load_prompt("prompt_refiner_system.md")
 
-    user = f"""CURRENT PROMPTS:
+    current = {
+        "screener_system": screener_prompt,
+        "market_research_system": market_prompt,
+        "team_research_system": team_prompt,
+    }
+
+    for i, case in enumerate(feedback_cases):
+        company = case.get("company", "unknown")
+        print(f"[prompt_refiner] Case {i + 1}/{len(feedback_cases)}: {company}")
+
+        user = f"""CURRENT PROMPTS:
 
 --- screener_system.md ---
-{screener_prompt}
+{current["screener_system"]}
 
 --- market_research_system.md ---
-{market_prompt}
+{current["market_research_system"]}
 
 --- team_research_system.md ---
-{team_prompt}
+{current["team_research_system"]}
 
 ---
 
-FEEDBACK CASES:
-{json.dumps(feedback_cases, indent=2, ensure_ascii=False)}
+FEEDBACK CASE:
+{json.dumps(case, indent=2, ensure_ascii=False)}
 """
 
-    result = run_agent_json(system=system, user=user)
+        result = run_agent_json(system=system, user=user)
 
-    for key in ("screener_system", "market_research_system", "team_research_system"):
-        if key not in result:
-            raise ValueError(f"[prompt_refiner] Missing key in response: '{key}'")
+        for key in ("screener_system", "market_research_system", "team_research_system"):
+            if key not in result:
+                raise ValueError(f"[prompt_refiner] Missing key '{key}' in response for case {i + 1}")
+
+        current = result
 
     print("[prompt_refiner] Done.")
-    return result
+    return current

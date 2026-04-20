@@ -47,7 +47,7 @@ Does the team have domain experience in the target market?
 
 Check these FIRST, before any scoring. If any of the following is TRUE with 100% certainty based on the data provided, return Decision = 0 immediately. Do NOT apply these if you are uncertain — only hard facts count.
 
-1. Primary market or HQ is outside Europe, US, or Israel. For US, only companies with HQ in the US qualify (US is USA).
+1. Primary market or HQ is outside Europe, US, or Israel. ALL European countries qualify — including Austria, Poland, Germany, France, Romania, Czech Republic, and any other EU or non-EU European country. Do NOT use founder location as a proxy for company HQ. Only disqualify if the company's primary market or registered HQ is confirmed to be outside these regions.
 2. A seed round has already been raised (pre-seed is acceptable).
 3. Company was founded more than 4 years ago.
 4. Company operates in Adult content, iGaming, or Online gambling.

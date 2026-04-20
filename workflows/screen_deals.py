@@ -46,14 +46,16 @@ def _format_team_profiles(profiles: list[dict]) -> str:
         summary = (f.get("summary") or "").replace("\n", " ")[:150]
 
         exp_lines = []
-        for e in (f.get("experiences") or [])[:5]:
+        experiences = f.get("experiences") or []
+        for i, e in enumerate(experiences):
             starts = e.get("starts_at") or ""
             ends = e.get("ends_at") or ""
             period = f"{starts}–{ends}" if ends else starts
-            description = (e.get("description") or "").strip()
             line = f"- {e.get('title')} at {e.get('company')} ({period})"
-            if description:
-                line += f"\n  {description[:300]}"
+            if i < 5:
+                description = " ".join((e.get("description") or "").split())
+                if description:
+                    line += f"\n  {description[:300]}"
             exp_lines.append(line)
 
         edu_lines = [

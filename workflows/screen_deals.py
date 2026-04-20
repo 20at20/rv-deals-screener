@@ -4,16 +4,17 @@ Layer: W (Workflow) — deterministic pipeline, no AI branching logic
 
 Input branching (per row):
   - Founder Linkedins present → enrich directly (skip founder-finder)
-  - Company website only      → find founders via Apify, then enrich
+  - Company website only      → find founders via 3-step fallback chain:
+      1a. Contact DB (find_founders) → LinkedIn URLs → enrich_linkedin
+      1b. LinkedIn company page (get_company_founders) → full profiles directly
+      1c. Claude web search (research_team) → text summary
 
 Steps per company:
-  1. Collect LinkedIn URLs (via Apify finder OR directly from sheet)
-  2. Enrich LinkedIn profiles via Apify
-  3. Run Claude web search for team ONLY if no LinkedIn data was found
-  4. Use LinkedIn data as team_data (or web research if LinkedIn unavailable)
-  5. Research market via Claude web search
-  6. Score deal via VC screener agent
-  7. Write results back to Google Sheet
+  1. Collect founder profiles (via one of the paths above)
+  2. Format profiles → team_data
+  3. Research market via Claude web search
+  4. Score deal via VC screener agent
+  5. Write results back to Google Sheet
 """
 
 import os
@@ -79,21 +80,35 @@ def process_one_deal(sheet_id: str, row: dict) -> None:
 
     print(f"\n[workflow] Processing: {company_website or founder_linkedin_raw or '(empty row)'}")
 
-    # ── 1. Collect LinkedIn URLs ──────────────────────────────────────────
+    # ── 1. Collect founder profiles ───────────────────────────────────────
+    linkedin_urls: list[str] = []
+    pre_fetched_profiles: list[dict] = []
+
     if founder_linkedin_raw:
-        # LinkedIn URLs already provided — skip founder-finder, enrich directly
         linkedin_urls = _parse_linkedin_urls(founder_linkedin_raw)
         match_col, match_val = "Founder Linkedins", founder_linkedin_raw
     elif company_website:
-        # Find founders by domain first
+        match_col, match_val = "Company website", company_website
+
+        # Step 1a: contact DB — fast, returns URLs for enrichment
         founders_raw = apify.find_founders(company_website)
         linkedin_urls = [f["linkedin"] for f in founders_raw if f.get("linkedin")]
-        match_col, match_val = "Company website", company_website
+
+        # Step 1b: LinkedIn company page — returns full profiles directly, no enrichment needed
+        if not linkedin_urls:
+            company_linkedin_url = apify.get_company_linkedin_url(company_website)
+            if company_linkedin_url:
+                pre_fetched_profiles = apify.get_company_founders(company_linkedin_url)
     else:
         raise ValueError("Row has neither Company website nor Founder Linkedins — skipping")
 
-    # ── 2. Enrich LinkedIn profiles ───────────────────────────────────────
-    profiles = apify.enrich_linkedin(linkedin_urls) if linkedin_urls else []
+    # ── 2. Enrich or use pre-fetched profiles ─────────────────────────────
+    if pre_fetched_profiles:
+        profiles = pre_fetched_profiles
+    elif linkedin_urls:
+        profiles = apify.enrich_linkedin(linkedin_urls)
+    else:
+        profiles = []
     linkedin_team_data = _format_team_profiles(profiles) if profiles else ""
 
     # If we came from the LinkedIn path, try to extract company_website from profile data
@@ -108,7 +123,11 @@ def process_one_deal(sheet_id: str, row: dict) -> None:
         team_data = web_team_data
 
     # ── 4. Research market ────────────────────────────────────────────────
-    market_data = research_market(company_website) if company_website else ""
+    is_stealth = any(
+        phrase in team_data.lower()
+        for phrase in ("stealth startup", "stealth company", "stealth mode")
+    )
+    market_data = research_market(company_website) if (company_website and not is_stealth) else ""
 
     # ── 5. Score ─────────────────────────────────────────────────────────
     market_summary = summarize_market(market_data)

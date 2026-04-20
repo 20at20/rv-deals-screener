@@ -18,5 +18,11 @@ def research_team(company_website: str) -> str:
     system = load_prompt("team_research_system.md")
     user = f"Research founding team for this company: {company_website}"
     result = run_agent_with_web_search(system=system, user=user)
+
+    marker = "## TEAM RESEARCH"
+    idx = result.find(marker)
+    if idx > 0:
+        result = result[idx:]
+
     print(f"[team_researcher] Done ({len(result)} chars)")
     return result

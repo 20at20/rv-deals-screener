@@ -26,3 +26,5 @@ Organize your response with these sections in order:
 4. **Domain Expertise** — Relevant industry experience or specialized knowledge.
 
 For clarity: identify the founder's current startup clearly at the start of your analysis. If a founder has recently transitioned away from a previous startup and is now starting or working on a new company, research only the prior company as execution evidence — do not treat the new/current role as a prior achievement.
+
+Start your response directly with "## TEAM RESEARCH" — no introduction, no preamble, no narration about your search process.

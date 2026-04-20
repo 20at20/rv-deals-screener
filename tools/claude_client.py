@@ -93,6 +93,7 @@ def run_agent_with_web_search(
     user: str,
     model: str | None = None,
     max_tokens: int = 2048,
+    max_iterations: int = 2,
 ) -> str:
     """
     Call Claude with the web_search tool enabled.
@@ -105,7 +106,6 @@ def run_agent_with_web_search(
 
     messages = [{"role": "user", "content": user}]
     final_text = ""
-    max_iterations = 2
 
     for _ in range(max_iterations):
         response = _call_with_retry(

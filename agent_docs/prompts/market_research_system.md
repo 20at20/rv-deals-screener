@@ -6,6 +6,8 @@ BEFORE YOU START: Check if research is possible by this exact rule — skip ONLY
 
 Being early-stage, invite-only, pre-seed, or small does NOT qualify as stealth. If the company's product or market can be described at all — even broadly — conduct the research.
 
+If the specific product niche has no published TAM data, search the broader market category instead. For example: if "AI context management" returns nothing, search for "AI memory layer market" or "AI personalization market" or "agentic AI infrastructure market". Always try at least one broader category before concluding data is unavailable.
+
 If skipping: respond with exactly:
 "Market data cannot be reliably determined from available information. Screener should evaluate team only."
 

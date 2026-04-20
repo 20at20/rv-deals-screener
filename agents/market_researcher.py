@@ -19,12 +19,13 @@ def research_market(company_website: str) -> str:
     user = f"Research market opportunity for this company: {company_website}"
     result = run_agent_with_web_search(system=system, user=user, max_tokens=1500)
 
-    # Strip any preamble before the first section header — the model narrates its
-    # research process despite prompt instructions; slicing is more reliable than prompting.
-    marker = "## MARKET SIZE"
-    idx = result.find(marker)
-    if idx > 0:
-        result = result[idx:]
+    # Strip narration preamble — slicing is more reliable than prompt instructions.
+    # Try the normal section header first; fall back to the skip message.
+    for marker in ("## MARKET SIZE", "Market data cannot be reliably determined"):
+        idx = result.find(marker)
+        if idx > 0:
+            result = result[idx:]
+            break
 
     print(f"[market_researcher] Done ({len(result)} chars)")
     return result

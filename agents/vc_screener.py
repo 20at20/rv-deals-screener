@@ -6,6 +6,8 @@ Takes formatted team data + market research text and produces a VC score.
 Output: {"decision": 0|1|2|3, "comment": "..."}
 """
 
+from datetime import date
+
 from tools.claude_client import load_prompt, run_agent_json
 
 
@@ -22,7 +24,8 @@ def score_deal(team_data: str, market_data: str) -> dict:
     """
     print("[vc_screener] Scoring deal...")
     system = load_prompt("screener_system.md")
-    user = f"TEAM DATA:\n{team_data}\n\nMarket and company info:\n{market_data}"
+    today = date.today().strftime("%Y-%m-%d")
+    user = f"Today's date: {today}\n\nTEAM DATA:\n{team_data}\n\nMarket and company info:\n{market_data}"
 
     result = run_agent_json(system=system, user=user)
 

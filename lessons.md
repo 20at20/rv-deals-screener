@@ -39,5 +39,17 @@ Each entry: what went wrong → rule that prevents it from happening again.
 **What went wrong:** The market researcher prompt said "Start directly with ## MARKET SIZE — no preamble". The model still narrated its entire research process ("I'll research...", "Now I have a clear picture...", "Perfect. Now I have...") before the structured output on every run.
 **Rule:** When you need output to start at a specific marker, find that marker in code and slice. `result = result[result.find("## MARKET SIZE"):]` is reliable; prompt instructions for format suppression are not.
 
+### 8. Always inject current date into prompts that do date-based reasoning
+**What went wrong:** VC screener disqualified a 2026-founded company as "founded in the future" because the model's knowledge cutoff made it treat 2026 as a future year.
+**Rule:** Any prompt that reasons about time (founding year, "4 years ago", recency) must receive `date.today()` in the user message. Never rely on the model's internal sense of "now".
+
+### 9. Be exhaustively explicit about geographic rules in prompts
+**What went wrong:** The screener prompt said "Europe, US, or Israel" and the model hallucinated "Western Europe only" — disqualifying Austrian founders as out-of-scope.
+**Rule:** When a rule has a geographic scope, list explicit country examples (Austria, Poland, Romania, etc.). The model will fill in unstated assumptions from training data, which may not match your intent.
+
+### 10. Apify harvestapi actor returns full profiles — no separate enrichment needed
+**What went wrong (potential):** harvestapi~linkedin-company-employees returns full profile data (experience, education, skills) directly. Using it AND enrich_linkedin() would be redundant.
+**Rule:** When using harvestapi for company employee scraping, normalize its output to the enrich_linkedin() schema in the tool layer so the workflow and formatter stay unchanged. Do not call enrich_linkedin() on top of it.
+
 ---
-*Last updated: 2026-04-03*
+*Last updated: 2026-04-21*

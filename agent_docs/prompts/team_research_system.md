@@ -18,12 +18,12 @@ Be concise and specific. For each prior role, include company name, title, durat
 
 ## STRUCTURE
 
+For every founder find information about their experience
+
 Organize your response with these sections in order:
 
-1. **Founding/Early-Stage Experience** — Dedicated section for any founder or co-founder roles at prior companies, with outcomes if known. This section is critical for assessing "doer" status.
-2. **C-Level and VP Roles** — Title, company, duration, and description of responsibilities and impact.
-3. **Product/Engineering Leadership** — Roles where the founder led teams that shipped products or features.
-4. **Domain Expertise** — Relevant industry experience or specialized knowledge.
+1. **Founding/Early-Stage Experience** — Dedicated section for any founder or co-founder roles at prior companies, with outcomes if known.
+2. **Corporate experince** — Title, company, duration, and description of responsibilities and impact.
 
 For clarity: identify the founder's current startup clearly at the start of your analysis. If a founder has recently transitioned away from a previous startup and is now starting or working on a new company, research only the prior company as execution evidence — do not treat the new/current role as a prior achievement.
 

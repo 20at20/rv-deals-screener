@@ -112,8 +112,6 @@ def get_company_founders(company_linkedin_url: str, max_items: int = 10) -> list
         },
     )
 
-    company_id = company_linkedin_url.rstrip("/").rsplit("/", 1)[-1].lower()
-
     profiles = []
     for item in results:
         location = item.get("location") or {}
@@ -129,15 +127,6 @@ def get_company_founders(company_linkedin_url: str, max_items: int = 10) -> list
                 "ends_at": "" if end_text == "Present" else end_text,
                 "description": e.get("description") or "",
             })
-
-        # Keep only people who have a "founder" role specifically at the target company
-        has_founder_role = any(
-            company_id in (e["company"] or "").lower()
-            and "founder" in (e["title"] or "").lower()
-            for e in experiences
-        )
-        if not has_founder_role:
-            continue
 
         education = [
             {"degree_name": e.get("degree"), "school": e.get("schoolName")}
@@ -170,4 +159,6 @@ def enrich_linkedin(linkedin_urls: list[str]) -> list[dict]:
 
     results = _post("anchor~linkedin-profile-enrichment", {"startUrls": start_urls})
     print(f"[apify] Enriched {len(results)} profile(s)")
+    if results:
+        print(f"[apify] Sample keys from first result: {list(results[0].keys())}")
     return results

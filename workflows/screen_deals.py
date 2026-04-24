@@ -111,6 +111,7 @@ def process_one_deal(sheet_id: str, row: dict) -> None:
         profiles = apify.enrich_linkedin(linkedin_urls)
     else:
         profiles = []
+    profiles = [p for p in profiles if p.get("full_name")]
     linkedin_team_data = _format_team_profiles(profiles) if profiles else ""
 
     # If we came from the LinkedIn path, try to extract company_website from profile data

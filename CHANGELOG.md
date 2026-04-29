@@ -63,3 +63,4 @@ Each entry is a YAML block: date, case count, and per-file description of what c
       - "Added requirement for specific descriptions of what was built, shipped, or accomplished in each role"
       - "Tightened 'be concise' instruction: marketing roles without product shipping must be explicitly marked as such"
       - "Added explicit STRUCTURE section with four ordered sections: Founding/Early-Stage, C-Level and VP, Product/Engineering Leadership, Domain Expertise"
+2026-04-29 17:17 UTC | 13 cases | screener_system.md, market_research_system.md, team_research_system.md

@@ -39,11 +39,19 @@ def _get_client() -> gspread.Client:
 
 
 def get_pending_rows(sheet_id: str, sheet_name: str = "Sheet1") -> list[dict]:
-    """Return all rows where 'Make analysis' == 'Yes'."""
+    """Return all rows where 'Make analysis' == 'Yes', with '_row_index' set to the sheet row number."""
     client = _get_client()
     sheet = client.open_by_key(sheet_id).worksheet(sheet_name)
-    all_rows = sheet.get_all_records()
-    pending = [row for row in all_rows if row.get("Make analysis") == "Yes"]
+    all_values = sheet.get_all_values()
+    if not all_values:
+        return []
+    headers = all_values[0]
+    pending = []
+    for i, row_values in enumerate(all_values[1:], start=2):
+        row = dict(zip(headers, row_values))
+        if row.get("Make analysis") == "Yes":
+            row["_row_index"] = i
+            pending.append(row)
     print(f"[sheets] Found {len(pending)} pending rows in '{sheet_name}'")
     return pending
 
@@ -68,27 +76,26 @@ def update_row(
     match_col: str,
     match_val: str,
     updates: dict,
+    row_index: int | None = None,
 ) -> None:
     """
-    Find the row where match_col == match_val and update the given columns.
+    Update columns in the row identified by row_index (preferred) or by match_col == match_val.
     Fails loudly if the row is not found.
     """
     client = _get_client()
     worksheet = client.open_by_key(sheet_id).worksheet(sheet_name)
 
     headers = worksheet.row_values(1)
-    all_values = worksheet.get_all_values()
 
-    if match_col not in headers:
-        raise ValueError(f"[sheets] Column '{match_col}' not found in sheet headers")
-
-    match_col_idx = headers.index(match_col)
-    row_index = None
-
-    for i, row in enumerate(all_values[1:], start=2):  # skip header, 1-indexed
-        if len(row) > match_col_idx and row[match_col_idx].strip() == match_val:
-            row_index = i
-            break
+    if row_index is None:
+        if match_col not in headers:
+            raise ValueError(f"[sheets] Column '{match_col}' not found in sheet headers")
+        match_col_idx = headers.index(match_col)
+        all_values = worksheet.get_all_values()
+        for i, row in enumerate(all_values[1:], start=2):
+            if len(row) > match_col_idx and row[match_col_idx].strip() == match_val:
+                row_index = i
+                break
 
     if row_index is None:
         raise LookupError(

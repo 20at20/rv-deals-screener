@@ -11,12 +11,12 @@ from datetime import date
 from tools.claude_client import load_prompt, run_agent_json
 
 
-def score_deal(team_data: str, market_data: str) -> dict:
+def score_deal(team_data: str, market_data: str, additional_context: str = "") -> dict:
     """
     Score a startup deal based on team and market data.
 
     Returns:
-        {"decision": int (0, 1, 2, or 3), "comment": str}
+        {"decision": int (0, 1, 2, or 3), "comment": str, "conviction": str, "short_description": str}
         - 0 = Disqualified (hard red flag confirmed with 100% certainty)
         - 1 = High Priority
         - 2 = Medium Priority
@@ -26,6 +26,8 @@ def score_deal(team_data: str, market_data: str) -> dict:
     system = load_prompt("screener_system.md")
     today = date.today().strftime("%Y-%m-%d")
     user = f"Today's date: {today}\n\nTEAM DATA:\n{team_data}\n\nMarket and company info:\n{market_data}"
+    if additional_context:
+        user += f"\n\nAdditional context from analyst:\n{additional_context}"
 
     result = run_agent_json(system=system, user=user)
 

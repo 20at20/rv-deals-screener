@@ -22,6 +22,9 @@ conviction reflects data quality:
 - Medium: strong team signal (prior founders, shipped products, C-level experience) but stealth company or limited market data.
 - Low: key team or market data missing or unreliable; decision is a best guess.
 
+## ADDITIONAL CONTEXT
+The analyst may provide an "Additional context" field with extra information about the company — e.g. revenue figures, round size, customer names, traction metrics, founder references, or other data points not in the LinkedIn or market research data. When present, treat this as first-party information and factor it directly into scoring. Revenue, ARR, or strong traction data can upgrade a Doer tier assessment. Round size can trigger or remove disqualifier #2 (seed round already raised). Always mention any material additional context in your comment.
+
 ## FACTORS
 
 ### 1. TEAM (80% weight)

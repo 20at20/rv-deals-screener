@@ -26,6 +26,7 @@ import tools.sheets as sheets
 from agents.market_researcher import research_market, summarize_market
 from agents.team_researcher import research_team
 from agents.vc_screener import score_deal
+from tools.claude_client import run_agent
 
 SHEET_NAME = "Sheet1"
 
@@ -79,6 +80,7 @@ def _format_team_profiles(profiles: list[dict]) -> str:
 def process_one_deal(sheet_id: str, row: dict) -> None:
     company_website = (row.get("Company website") or "").strip()
     founder_linkedin_raw = (row.get("Founder Linkedins") or "").strip()
+    additional_context = (row.get("Additional context") or "").strip()
 
     print(f"\n[workflow] Processing: {company_website or founder_linkedin_raw or '(empty row)'}")
 
@@ -134,24 +136,36 @@ def process_one_deal(sheet_id: str, row: dict) -> None:
 
     # ── 5. Score ─────────────────────────────────────────────────────────
     market_summary = summarize_market(market_data)
-    result = score_deal(team_data=team_data, market_data=market_summary)
+    result = score_deal(team_data=team_data, market_data=market_summary, additional_context=additional_context)
 
-    # ── 6. Write back ─────────────────────────────────────────────────────
+    # ── 6. Short description ──────────────────────────────────────────────
+    context_for_description = market_summary or team_data[:800]
+    short_description = run_agent(
+        system="Write one sentence describing what this company does as a clear business idea. Be specific and laconic — no jargon, no filler words. Output only the sentence, nothing else.",
+        user=f"Company: {company_website}\n\n{context_for_description}",
+        max_tokens=80,
+    )
+
+    # ── 7. Write back ─────────────────────────────────────────────────────
     conviction = result.get("conviction", "")
     comment = f"Conviction: {conviction}\n\n{result['comment']}" if conviction else result["comment"]
+
+    updates = {
+        "Priority": result["decision"],
+        "Comments": comment,
+        "Team data": team_data,
+        "Market data": market_data,
+        "Make analysis": "Done",
+        "Short description": short_description,
+    }
 
     sheets.update_row(
         sheet_id=sheet_id,
         sheet_name=SHEET_NAME,
         match_col=match_col,
         match_val=match_val,
-        updates={
-            "Priority": result["decision"],
-            "Comments": comment,
-            "Team data": team_data,
-            "Market data": market_data,
-            "Make analysis": "Done",
-        },
+        updates=updates,
+        row_index=row.get("_row_index"),
     )
     print(f"[workflow] ✓ {company_website or founder_linkedin_raw} → Priority {result['decision']}")
 

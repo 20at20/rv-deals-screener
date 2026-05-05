@@ -23,14 +23,14 @@ def _api_key() -> str:
     return key
 
 
-def _post(actor: str, payload: dict) -> list[dict]:
+def _post(actor: str, payload: dict, timeout: int = TIMEOUT) -> list[dict]:
     url = f"{APIFY_BASE}/{actor}/run-sync-get-dataset-items"
     headers = {
         "Authorization": f"Bearer {_api_key()}",
         "Accept": "application/json",
     }
     try:
-        response = httpx.post(url, json=payload, headers=headers, timeout=TIMEOUT)
+        response = httpx.post(url, json=payload, headers=headers, timeout=timeout)
         response.raise_for_status()
         data = response.json()
         return data if isinstance(data, list) else []
@@ -54,6 +54,7 @@ def find_founders(company_domain: str) -> list[dict]:
             "company_domain": [company_domain],
             "contact_job_title": ["founder"],
         },
+        timeout=60,
     )
 
     founders = []
@@ -83,6 +84,7 @@ def get_company_linkedin_url(company_website: str) -> str:
     results = _post(
         "s-r~free-linkedin-company-finder---linkedin-address-from-any-site",
         {"domains": [domain]},
+        timeout=60,
     )
     linkedin_url = (results[0].get("linkedin_url") or "") if results else ""
     print(f"[apify] Company LinkedIn URL: {linkedin_url or '(not found)'}")

@@ -14,7 +14,7 @@ Return a JSON object with exactly these fields:
 {
   "decision": 0 | 1 | 2 | 3,
   "conviction": "High" | "Medium" | "Low",
-  "comment": "Max 3 sentences on team (execution tier, key evidence, conviction level with reason) + max 1 sentence on market (if available). Be specific and direct — no filler. If Decision = 0, state the disqualifier and add a one-sentence team quality note."
+  "comment": "Two paragraphs separated by \n\n. Paragraph 1: up to 3 sentences on team (execution tier, key evidence, conviction level with reason). Paragraph 2: 1 sentence on market (omit entirely if stealth or no market data). Be specific and direct — no filler. If Decision = 0, paragraph 1 states the disqualifier + one-sentence team quality note; no paragraph 2."
 }
 
 conviction reflects data quality:

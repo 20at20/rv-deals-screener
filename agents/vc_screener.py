@@ -29,7 +29,7 @@ def score_deal(team_data: str, market_data: str, additional_context: str = "") -
     if additional_context:
         user += f"\n\nAdditional context from analyst:\n{additional_context}"
 
-    result = run_agent_json(system=system, user=user)
+    result = run_agent_json(system=system, user=user, model="claude-sonnet-4-6")
 
     decision = result.get("decision")
     comment = result.get("comment", "")

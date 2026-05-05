@@ -14,7 +14,7 @@ Return a JSON object with exactly these fields:
 {
   "decision": 0 | 1 | 2 | 3,
   "conviction": "High" | "Medium" | "Low",
-  "comment": "2–4 sentences: team verdict → market verdict (if available) → decision rationale. ALWAYS explicitly explain conviction level with specific reasons (e.g., 'High conviction: strong team with shipped products'; 'Medium conviction: stealth company, market unvalidated but team strong'; 'Low conviction: missing founder LinkedIn data or unverified claims'). If Decision = 0 due to a disqualifier, also briefly assess team quality as a secondary note."
+  "comment": "Max 3 sentences on team (execution tier, key evidence, conviction level with reason) + max 1 sentence on market (if available). Be specific and direct — no filler. If Decision = 0, state the disqualifier and add a one-sentence team quality note."
 }
 
 conviction reflects data quality:

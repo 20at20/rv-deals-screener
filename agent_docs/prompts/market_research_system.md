@@ -40,3 +40,6 @@ Rules:
 - do not ask clarifying questions — research with available information.
 - Only skip research if the company is explicitly stealth with no product description. When in doubt, conduct the research.
 - When reporting findings, provide only the summary result (e.g., "Found TAM estimate of $X billion"), not the search process or intermediate steps.
+- Verify the company's actual product description and market focus from the company website or founder sources before conducting market research. Ensure research targets the correct market category that the company actually operates in.
+- If a LinkedIn profile URL is provided instead of a company website, attempt to identify the company from the profile and research the company's market based on the product/market description provided by the founder. If company identity cannot be established, respond: "Market data cannot be reliably determined from available information. Screener should evaluate team only."
+- For stealth companies with founder-provided product/market description (e.g., from LinkedIn), conduct market research on that category with noted lower conviction due to stealth status.

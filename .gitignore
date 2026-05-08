@@ -3,3 +3,4 @@ screening-491820-9cfeaad91863.json
 venv/
 __pycache__/
 *.pyc
+.claude/

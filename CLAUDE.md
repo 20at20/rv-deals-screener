@@ -17,8 +17,8 @@ This project is created to make a screening of the projects for early-stage VC f
 
 ## Webhook server (server.py)
 Flask server that exposes `POST /run` — used by the Google Sheets button to trigger the pipeline remotely.
-- Deployed on Railway at `web-production-5dcdc.up.railway.app`
-- GitHub repo: `github.com/20at20/rv-deals-screener` — Railway auto-deploys on push to main
+- Deployed on Railway (URL set in deployment env)
+- GitHub repo: set in deployment env — Railway auto-deploys on push to main
 - Auth: `X-Webhook-Secret` header must match `WEBHOOK_SECRET` env var
 - Pipeline runs in a background thread; server responds 202 immediately
 - Google Sheets button → Apps Script (`runScreener`) → calls `/run` → results appear in sheet

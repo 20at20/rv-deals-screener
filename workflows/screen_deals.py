@@ -32,10 +32,10 @@ SHEET_NAME = "Sheet1"
 
 
 def _parse_linkedin_urls(raw: str) -> list[str]:
-    """Extract valid LinkedIn URLs from a comma-separated string."""
+    """Extract valid LinkedIn URLs from a string; splits on comma, semicolon, newline, or whitespace."""
     urls = [
         re.sub(r"[\u200B-\u200D\uFEFF\u2060]", "", u).strip()
-        for u in raw.split(",")
+        for u in re.split(r"[,;\n\r\s]+", raw)
     ]
     return [u for u in urls if re.match(r"^https?://.+", u, re.IGNORECASE)]
 

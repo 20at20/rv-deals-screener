@@ -41,18 +41,41 @@ def _get_client() -> gspread.Client:
 def get_pending_rows(sheet_id: str, sheet_name: str = "Sheet1") -> list[dict]:
     """Return all rows where 'Make analysis' == 'Yes', with '_row_index' set to the sheet row number."""
     client = _get_client()
-    sheet = client.open_by_key(sheet_id).worksheet(sheet_name)
-    all_values = sheet.get_all_values()
-    if not all_values:
+    ws = client.open_by_key(sheet_id).worksheet(sheet_name)
+
+    headers = ws.row_values(1)
+    if not headers:
         return []
-    headers = all_values[0]
+
+    try:
+        make_col_idx = headers.index("Make analysis") + 1  # gspread is 1-indexed
+    except ValueError:
+        print("[sheets] WARNING: 'Make analysis' column not found in headers")
+        return []
+
+    # col_values fetches the full column top-to-bottom, so blank rows mid-sheet
+    # don't truncate the result the way get_all_values() can.
+    col_values = ws.col_values(make_col_idx)
+    print(f"[sheets] 'Make analysis' column has {len(col_values)} values (incl. header)")
+
+    pending_row_indices = [
+        i + 1  # col_values[1] is row 2, col_values[k] is row k+1
+        for i, v in enumerate(col_values[1:], start=1)
+        if v.strip() == "Yes"
+    ]
+
+    print(f"[sheets] Found {len(pending_row_indices)} pending rows in '{sheet_name}'")
+    if not pending_row_indices:
+        return []
+
     pending = []
-    for i, row_values in enumerate(all_values[1:], start=2):
-        row = dict(zip(headers, row_values))
-        if row.get("Make analysis") == "Yes":
-            row["_row_index"] = i
-            pending.append(row)
-    print(f"[sheets] Found {len(pending)} pending rows in '{sheet_name}'")
+    for row_idx in pending_row_indices:
+        row_values = ws.row_values(row_idx)
+        padded = row_values + [""] * max(0, len(headers) - len(row_values))
+        row = dict(zip(headers, padded))
+        row["_row_index"] = row_idx
+        pending.append(row)
+
     return pending
 
 
